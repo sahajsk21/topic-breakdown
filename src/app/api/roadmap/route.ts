@@ -41,7 +41,8 @@ Response:
 		});
 
 		console.log("data: ", data);
-		const gptResponse = JSON.parse(data.choices[0].message.content);
+		const content = data.choices[0].message.content;
+		const gptResponse = content ? JSON.parse(content) : "";
 		return NextResponse.json(gptResponse);
 	} catch (error) {
 		console.error("Error fetching subtopics: ", error);

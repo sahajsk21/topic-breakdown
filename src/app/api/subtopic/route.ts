@@ -45,8 +45,13 @@ Response:
 		});
 
 		console.log("data: ", data);
-		const gptResponse = JSON.parse(data.choices[0].message.content);
-		return NextResponse.json(gptResponse);
+		const content = data.choices[0].message.content;
+		if (content) {
+			const gptResponse = JSON.parse(content);
+			return NextResponse.json(gptResponse);
+		} else {
+			return NextResponse.json({ status: 500 });
+		}
 	} catch (error) {
 		console.error("Error fetching subtopics: ", error);
 		return NextResponse.json({ message: "Failed to fetch subtopics" }, { status: 500 });

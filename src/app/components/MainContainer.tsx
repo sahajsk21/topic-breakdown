@@ -9,7 +9,7 @@ const MainContainer = () => {
 	const [topicTitle, setTopicTitle] = useState("Selected Topic");
 	const networkRef = useRef<HTMLDivElement>(null);
 	const [network, setNetwork] = useState<Network | null>(null);
-	const [messages, setMessages] = useState([]);
+	const [messages, setMessages] = useState<{ role: string; content: any }[]>([]);
 	const [userInput, setUserInput] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 	const [isSending, setIsSending] = useState(false);
@@ -63,7 +63,7 @@ const MainContainer = () => {
 		if (roadmap.length > 0) {
 			let level = 1;
 			let prevNode = mainNode;
-			roadmap.forEach((subtopic, index) => {
+			roadmap.forEach((subtopic: any, index: number) => {
 				const newNodeId = index + 2;
 				nodes.current.add({
 					id: newNodeId,
@@ -122,7 +122,7 @@ const MainContainer = () => {
 			newNetwork.on("click", async function (params) {
 				if (params.nodes.length > 0) {
 					const nodeId = params.nodes[0];
-					const clickedNode = nodes.current.get(nodeId);
+					const clickedNode: any = nodes.current.get(nodeId);
 
 					// Check if the node is a leaf node (i.e., it has no children)
 					const isLeafNode = !edges.current.get({ filter: (edge: any) => edge.from === nodeId }).length;
@@ -136,7 +136,7 @@ const MainContainer = () => {
 						nodes.current.update(clickedNode);
 
 						if (subtopics.length > 0) {
-							subtopics.forEach((subtopic) => {
+							subtopics.forEach((subtopic: any) => {
 								const newNodeId = nodes.current.length + 1;
 
 								if (!nodes.current.get({ filter: (item: any) => item.label === subtopic }).length) {
@@ -216,7 +216,7 @@ const MainContainer = () => {
 		}
 
 		// Update the metadata of the current node with the new messages
-		const selectedNodes = network.getSelectedNodes();
+		const selectedNodes = network ? network.getSelectedNodes() : [];
 		const currentNode = nodes.current.get(selectedNodes.length > 0 ? selectedNodes[0] : 1);
 		if (currentNode) {
 			currentNode.metadata.messages = [...newMessages, { role: "assistant", content: result }];
@@ -250,7 +250,7 @@ const MainContainer = () => {
 			});
 
 			connectedEdges.forEach((edge: any) => {
-				const childNode = nodes.current.get(edge.to);
+				const childNode: any = nodes.current.get(edge.to);
 				edges.current.update({ id: edge.id, hidden: !isHidden });
 				if (childNode) {
 					nodes.current.update({
