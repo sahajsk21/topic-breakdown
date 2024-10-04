@@ -61,8 +61,8 @@ const MainContainer = () => {
 		setTopicTitle(mainTopic);
 
 		if (roadmap.length > 0) {
-			var level = 1;
-			var prevNode = mainNode;
+			let level = 1;
+			let prevNode = mainNode;
 			roadmap.forEach((subtopic, index) => {
 				const newNodeId = index + 2;
 				nodes.current.add({
@@ -267,19 +267,19 @@ const MainContainer = () => {
 		<div className="container mx-auto p-4">
 			<Header />
 			<InputSection isLoading={isLoading} handleKeyPress={handleKeyPress} handleGenerateGraph={handleGenerateGraph} />
-                <div className="flex flex-col lg:flex-row min-h-full">
-                    <NetworkSection networkRef={networkRef} />
-                    <ChatSection
-                        topicTitle={topicTitle}
-                        messages={messages}
-                        userInput={userInput}
-                        setUserInput={setUserInput}
-                        handleKeyPress={handleKeyPress}
-                        handleSendMessage={handleSendMessage}
-                        isSending={isSending}
-                        chatContainerRef={chatContainerRef}
-                    />
-                </div>
+			<div className="flex flex-col lg:flex-row min-h-full">
+				<NetworkSection networkRef={networkRef} />
+				<ChatSection
+					topicTitle={topicTitle}
+					messages={messages}
+					userInput={userInput}
+					setUserInput={setUserInput}
+					handleKeyPress={handleKeyPress}
+					handleSendMessage={handleSendMessage}
+					isSending={isSending}
+					chatContainerRef={chatContainerRef}
+				/>
+			</div>
 		</div>
 	);
 };
