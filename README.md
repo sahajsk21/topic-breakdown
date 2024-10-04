@@ -22,8 +22,7 @@ npm install
 Create a .env.local file in the root directory and add your environment variables:
     
 ```bash
-AZURE_OPENAI_ENDPOINT=<your-azure-openai-endpoint>
-AZURE_OPENAI_API_KEY=<your-azure-openai-api-key>
+OPENAI_API_KEY=<your-openai-api-key>
 ```
 
 Finally, start the development server:
