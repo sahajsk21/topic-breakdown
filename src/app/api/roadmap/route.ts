@@ -1,20 +1,20 @@
 import { NextResponse } from "next/server";
+import OpenAI from "openai";
+
+const client = new OpenAI({
+	apiKey: process.env["OPENAI_API_KEY"],
+});
 
 export async function POST(req: Request) {
 	const { topic } = await req.json();
 	console.log("topic: ", topic);
 	try {
-		const response = await fetch(process.env.AZURE_OPENAI_ENDPOINT!, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				"api-key": process.env.AZURE_OPENAI_API_KEY!,
-			},
-			body: JSON.stringify({
-				messages: [
-					{
-						role: "system",
-						content: `# Goal
+		const data = await client.chat.completions.create({
+			model: "gpt-4o",
+			messages: [
+				{
+					role: "system",
+					content: `# Goal
 For a given topic return a roadmap that can be used to learn about the topic.
 
 # Response structure:
@@ -34,16 +34,12 @@ Response:
 {
   "roadmap": ["Math Operations", "Numbers"],
   "information": "Fractions are a way to represent parts of a whole."
-}`,
-					},
-					{ role: "user", content: topic },
-				],
-				max_tokens: 1000,
-				temperature: 0,
-			}),
+	}`,
+				},
+				{ role: "user", content: topic },
+			],
 		});
 
-		const data = await response.json();
 		console.log("data: ", data);
 		const gptResponse = JSON.parse(data.choices[0].message.content);
 		return NextResponse.json(gptResponse);

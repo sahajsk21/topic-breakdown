@@ -1,20 +1,20 @@
 import { NextResponse } from "next/server";
+import OpenAI from "openai";
+
+const client = new OpenAI({
+	apiKey: process.env["OPENAI_API_KEY"],
+});
 
 export async function POST(req: Request) {
 	const { topicChain } = await req.json();
 	console.log("topicChain: ", topicChain);
 	try {
-		const response = await fetch(process.env.AZURE_OPENAI_ENDPOINT!, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				"api-key": process.env.AZURE_OPENAI_API_KEY!,
-			},
-			body: JSON.stringify({
-				messages: [
-					{
-						role: "system",
-						content: `# Goal
+		const data = await client.chat.completions.create({
+			model: "gpt-4o",
+			messages: [
+				{
+					role: "system",
+					content: `# Goal
 Return a list of subtopics and additional information for a given topic chain.
 
 # Response structure:
@@ -39,15 +39,11 @@ Response:
   "subtopics": ["Linear Algebra", "Abstract Algebra"],
   "information": "Algebra is a branch of mathematics that deals with symbols and the rules for manipulating those symbols."
 }`,
-					},
-					{ role: "user", content: topicChain },
-				],
-				max_tokens: 1500,
-				temperature: 0
-			}),
+				},
+				{ role: "user", content: topicChain },
+			],
 		});
 
-		const data = await response.json();
 		console.log("data: ", data);
 		const gptResponse = JSON.parse(data.choices[0].message.content);
 		return NextResponse.json(gptResponse);

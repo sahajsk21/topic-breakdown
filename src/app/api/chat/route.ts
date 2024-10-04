@@ -1,30 +1,27 @@
 import { NextResponse } from "next/server";
+import OpenAI from "openai";
+
+const client = new OpenAI({
+	apiKey: process.env["OPENAI_API_KEY"],
+});
 
 export async function POST(req: Request) {
 	const { messages } = await req.json();
-	try {
-		const systemPrompt = `# Goal
+	const systemPrompt = `# Goal
 To respond to a user's messages with relevant information.
 
 # Guidelines:
 - Be concise and informative.
 - Return markdown formatted text.
 - Enclose mathematical formulas in dollar signs.
-`
-		const response = await fetch(process.env.AZURE_OPENAI_ENDPOINT!, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				"api-key": process.env.AZURE_OPENAI_API_KEY!,
-			},
-			body: JSON.stringify({
-				messages: [{role: "system", content: systemPrompt}, ...messages],
-				max_tokens: 2000,
-				temperature: 0,
-			}),
+`;
+	try {
+		const data = await client.chat.completions.create({
+			model: "gpt-4o",
+			messages: [{ role: "system", content: systemPrompt }, ...messages],
 		});
 
-		const data = await response.json();
+		console.log("data: ", data);
 		return NextResponse.json(data.choices[0].message.content);
 	} catch (error) {
 		console.error("Error fetching subtopics: ", error);
